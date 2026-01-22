@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Meta & Page Info -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CloudTrip – Your Smart Travel Companion</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+    <!-- -----------------------------
+         Navbar Section
+         Handles logo, brand, and user authentication buttons
+    ------------------------------ -->
+    <nav class="navbar navbar-expand-lg sticky-top">
+    <div class="container">
+        <!-- Brand Logo -->
+        <a class="navbar-brand" href="{{ url_for('home') }}">
+           <a class="navbar-brand" href="#">
+                <svg class="logo-icon" fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 4H17.3334V17.3334H30.6666V30.6666H44V44H4V4Z" fill="currentColor"></path>
+                </svg>
+                <span class="brand-name">CloudTrip</span>
+            </a>
+
+            
+            <!-- Mobile Navbar Toggler -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0"></ul>
+                
+                <!-- Authentication Buttons -->
+                <div class="d-flex gap-2">
+                    {% if username %}
+                        <span class="me-2 fw-semibold">Hi, {{ username }}</span>
+                        <!-- تقدر تضيف بعدين زر Profile أو Logout هنا لو حابب -->
+                    {% else %}
+                        <button class="btn btn-signup" data-bs-toggle="modal" data-bs-target="#signUpModal">Sign Up</button>
+                        <button class="btn btn-login" data-bs-toggle="modal" data-bs-target="#signInModal">Log In</button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- -----------------------------
+         Sign In Modal
+         Popup for user login
+    ------------------------------ -->
+    <div class="modal fade" id="signInModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-md">
+        <div class="modal-content shadow-lg border-0 rounded-4">
+
+          <!-- Modal Header -->
+          <div class="modal-header border-0 pb-0">
+            <h4 class="fw-bold mb-0" style="font-size: 1.5rem;">Log In</h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+
+          <!-- Modal Body -->
+          <div class="modal-body px-4 pb-4">
+            <form class="mt-3" method="POST" action="{{ url_for('login') }}">
+
+              <!-- Email Input -->
+              <div class="mb-3">
+                <label class="form-label fw-semibold">Email</label>
+                <input type="email" name="email" class="form-control custom-input" placeholder="you@example.com" required>
+              </div>
+
+              <!-- Password Input -->
+              <div class="mb-2">
+                <label class="form-label fw-semibold">Password</label>
+                <input type="password" name="password" class="form-control custom-input" placeholder="Enter your password" required>
+              </div>
+
+              <!-- Forgot Password -->
+              <div class="text-end mb-3">
+                <a href="#" class="small text-primary fw-semibold">Forgot Password?</a>
+              </div>
+
+              <!-- Submit Button -->
+              <button class="btn btn-primary w-100 py-2 mt-2 rounded-3 fw-semibold custom-btn" type="submit">
+                Log In
+              </button>
+            </form>
+
+            <!-- Link to Sign Up -->
+            <p class="mt-3 text-center">
+              Don’t have an account?
+              <a href="#" id="goToSignUp" class="fw-semibold text-primary">Sign Up</a>
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- -----------------------------
+         Sign Up Modal
+         Popup for user registration
+    ------------------------------ -->
+    <div class="modal fade" id="signUpModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-md">
+        <div class="modal-content shadow-lg border-0 rounded-4">
+
+          <!-- Modal Header -->
+          <div class="modal-header border-0 pb-0">
+            <h4 class="fw-bold mb-0" style="font-size: 1.5rem;">Sign Up</h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+
+          <!-- Modal Body -->
+          <div class="modal-body px-4 pb-4">
+
+            <form class="mt-3" method="POST" action="{{ url_for('signup') }}">
+
+              <!-- First Name -->
+              <div class="mb-3">
+                <label class="form-label fw-semibold">First Name</label>
+                <input type="text" name="first_name" class="form-control custom-input" placeholder="Enter your first name" required>
+              </div>
+
+              <!-- Last Name -->
+              <div class="mb-3">
+                <label class="form-label fw-semibold">Last Name</label>
+                <input type="text" name="last_name" class="form-control custom-input" placeholder="Enter your last name">
+              </div>
+
+              <!-- Email -->
+              <div class="mb-3">
+                <label class="form-label fw-semibold">Email</label>
+                <input type="email" name="email" class="form-control custom-input" placeholder="you@example.com" required>
+              </div>
+
+              <!-- Password -->
+              <div class="mb-3">
+                <label class="form-label fw-semibold">Password</label>
+                <input type="password" name="password" class="form-control custom-input" placeholder="Enter a password" required>
+              </div>
+
+              <!-- Submit Button -->
+              <button class="btn btn-primary w-100 py-2 mt-2 rounded-3 fw-semibold custom-btn" type="submit">
+                Sign Up
+              </button>
+            </form>
+
+            <!-- Link to Sign In -->
+            <p class="mt-3 text-center">
+              Already have an account?
+              <a href="#" data-bs-toggle="modal" data-bs-target="#signInModal" data-bs-dismiss="modal" class="fw-semibold text-primary">LogIn</a>
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- -----------------------------
+         Main Content
+    ------------------------------ -->
+    <main>
+        <!-- Hero Section -->
+        <section class="container my-5">
+            <div class="hero-section">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <h1 class="hero-title">Plan Your Perfect Trip Effortlessly.</h1>
+                        <p class="hero-subtitle">Use CloudTrip to create personalized itineraries and find the best deals on flights.</p>
+                        <div class="d-flex flex-wrap justify-content-center gap-3">
+                          {% if username %}
+                            <a class="btn btn-hero-primary" href="{{ url_for('search') }}">
+                                Search Flights
+                            </a>
+                          {% else %}
+                            <!-- Show button for guests that opens the login modal -->
+                            <button class="btn btn-hero-primary" data-bs-toggle="modal" data-bs-target="#signInModal">
+                                Search Flights
+                            </button>
+                          {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="container my-5 py-5">
+            <div class="row justify-content-center text-center mb-5">
+                <div class="col-lg-8">
+                    <h2 class="section-title">Your Smartest Travel Companion</h2>
+                    <p class="section-subtitle">Discover the easiest way to plan and book your next adventure with our intelligent features.</p>
+                </div>
+            </div>
+            
+            <div class="row g-4">
+                <!-- Feature 1 -->
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <span class="material-symbols-outlined" style="font-size: 2.5rem;">map</span>
+                        </div>
+                        <h3 class="feature-title">Personalized Plans</h3>
+                        <p class="feature-description">Get smart itineraries tailored to your interests and budget.</p>
+                    </div>
+                </div>
+                
+                <!-- Feature 2 -->
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <span class="material-symbols-outlined" style="font-size: 2.5rem;">sell</span>
+                        </div>
+                        <h3 class="feature-title">Real-Time Deals</h3>
+                        <p class="feature-description">Find the best prices on flights with live updates.</p>
+                    </div>
+                </div>
+                
+                <!-- Feature 3 -->
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <span class="material-symbols-outlined" style="font-size: 2.5rem;">luggage</span>
+                        </div>
+                        <h3 class="feature-title">All-in-One Booking</h3>
+                        <p class="feature-description">Book everything you need for your trip in one seamless platform.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials Section -->
+        <section class="testimonial-section">
+            <div class="container">
+                <h4 class="testimonial-label">What Our Travelers Say</h4>
+                <blockquote>
+                    <p class="testimonial-quote">"CloudTrip made planning our family vacation a breeze. The personalized itinerary was a game changer! Highly recommended."</p>
+                </blockquote>
+            </div>
+        </section>
+    </main>
+
+    <!-- -----------------------------
+         Footer Section
+    ------------------------------ -->
+    <footer>
+        <div class="container">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center">
+                <div class="text-muted mb-3 mb-md-0">© 2025 CloudTrip. All rights reserved.</div>
+                <div class="footer-links">
+                    <a href="#">About Us</a>
+                    <a href="#">Privacy Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- -----------------------------
+         Scripts
+    ------------------------------ -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

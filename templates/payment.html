@@ -1,0 +1,546 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Payment Page - TravelMate</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #939fbb, #4e7fcf);
+            padding: 20px;
+            color: #050a15;
+        }
+
+        .payment-container {
+            background: #ffffff;
+            max-width: 500px;
+            width: 100%;
+            border-radius: 18px;
+            padding: 28px 26px 28px;
+            box-shadow: 0 18px 45px rgba(0, 0, 0, 0.2);
+        }
+
+        .payment-header {
+            position: relative;
+            margin-bottom: 24px;
+        }
+
+        .back-btn {
+            position: absolute;
+            left: -10px;
+            top: 0;
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            color: #6b7280;
+            cursor: pointer;
+            padding: 0;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .payment-header h2 {
+            font-size: 1.3rem;
+            text-align: center;
+            margin: 0;
+        }
+
+        .saved-cards {
+            margin: 16px 0 20px;
+        }
+
+        .method-option {
+            display: flex;
+            align-items: center;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: border-color 0.2s ease, background-color 0.2s ease;
+            position: relative;
+        }
+
+        .method-option:hover {
+            border-color: #9ca3af;
+        }
+
+        .method-option input {
+            display: none;
+        }
+
+        .method-option.active {
+            border-color: #3b82f6;
+            background-color: #eff6ff;
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 24px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+            color: white;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        .visa {
+            background-color: #1434c3;
+        }
+
+        .mastercard {
+            background-color: #eb001b;
+        }
+
+        .paypal {
+            background-color: #003087;
+        }
+
+        .card-info {
+            flex: 1;
+        }
+
+        .card-info > div:first-child {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #111827;
+        }
+
+        .card-info > div:last-child {
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+
+        .radio-circle {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #d1d5db;
+            margin-left: 12px;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .method-option.active .radio-circle {
+            border-color: #3b82f6;
+        }
+
+        .method-option.active .radio-circle::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 8px;
+            height: 8px;
+            background-color: #3b82f6;
+            border-radius: 50%;
+        }
+
+        .add-new {
+            border-style: dashed;
+            background-color: #f0f9ff;
+            color: #3b82f6;
+            font-weight: 500;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .add-new div {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .add-new span {
+            margin-right: 8px;
+            font-size: 1.2rem;
+            line-height: 1;
+        }
+
+        .method-section {
+            display: none;
+            margin-bottom: 16px;
+        }
+
+        .method-section.active {
+            display: block;
+        }
+
+        .section-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #111827;
+        }
+
+        .field-group {
+            margin-bottom: 12px;
+        }
+
+        .field-group label {
+            display: block;
+            font-size: 0.8rem;
+            margin-bottom: 4px;
+            color: #374151;
+        }
+
+        .field-group input {
+            width: 100%;
+            padding: 8px 10px;
+            border-radius: 10px;
+            border: 1px solid #d1d5db;
+            font-size: 0.85rem;
+            outline: none;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .field-group input:focus {
+            border-color: #0ea5e9;
+            box-shadow: 0 0 0 1px rgba(14, 165, 233, 0.15);
+        }
+
+        .row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .row .field-group {
+            flex: 1;
+        }
+
+        .order-summary {
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 16px;
+            margin: 20px 0;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: #374151;
+        }
+
+        .summary-row.total-row {
+            margin-top: 4px;
+            padding-top: 12px;
+            border-top: 1px solid #e5e7eb;
+            font-weight: 600;
+            color: #111827;
+            font-size: 1rem;
+        }
+
+        .secure-note {
+            text-align: center;
+            font-size: 0.85rem;
+            color: #6b7280;
+            margin-bottom: 16px;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 999px;
+            background: linear-gradient(135deg, #0ea5e9, #2563eb);
+            color: white;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 18px rgba(37, 99, 235, 0.4);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+            box-shadow: none;
+        }
+
+        .hint {
+            font-size: 0.7rem;
+            color: #9ca3af;
+            margin-top: 6px;
+            text-align: center;
+        }
+
+        .message {
+            margin-top: 12px;
+            font-size: 0.85rem;
+            text-align: center;
+            display: none;
+        }
+
+        .message.success {
+            color: #16a34a;
+        }
+
+        .message.error {
+            color: #dc2626;
+        }
+    </style>
+</head>
+<body>
+
+<div class="payment-container">
+    <div class="payment-header">
+        <button class="back-btn" onclick="window.history.back()">&larr;</button>
+        <h2>Select Payment Method</h2>
+    </div>
+
+    <div class="saved-cards" id="paymentMethods">
+        <label class="method-option active">
+            <input type="radio" name="payment_method" value="saved_visa" checked />
+            <div class="card-icon visa">VISA</div>
+            <div class="card-info">
+                <div>Credit card/Mastercard</div>
+            </div>
+            <div class="radio-circle"></div>
+        </label>
+
+
+        <label class="method-option">
+            <input type="radio" name="payment_method" value="paypal" />
+            <div class="card-icon paypal">PayPal</div>
+            <div class="card-info">
+                <div>PayPal</div>
+            </div>
+            <div class="radio-circle"></div>
+        </label>
+
+    </div>
+
+    <form id="paymentForm">
+        <div class="method-section" id="cardSection">
+            <div class="section-title">Card Details</div>
+
+            <div class="field-group">
+                <label for="cardName">Name on Card</label>
+                <input type="text" id="cardName" placeholder="Full name as on card" />
+            </div>
+
+            <div class="field-group">
+                <label for="cardNumber">Card Number</label>
+                <input type="text" id="cardNumber" maxlength="19" placeholder="xxxx xxxx xxxx xxxx" />
+            </div>
+
+            <div class="row">
+                <div class="field-group">
+                    <label for="expiry">Expiry (MM/YY)</label>
+                    <input type="text" id="expiry" maxlength="5" placeholder="MM/YY" />
+                </div>
+                <div class="field-group">
+                    <label for="cvv">CVV</label>
+                    <input type="password" id="cvv" maxlength="3" placeholder="3 digits" autocomplete="off" />
+                </div>
+            </div>
+        </div>
+
+        <div class="method-section" id="paypalSection">
+            <div class="section-title">PayPal Account</div>
+
+            <div class="field-group">
+                <label for="paypalEmail">PayPal Email</label>
+                <input type="email" id="paypalEmail" placeholder="you@example.com" />
+            </div>
+        </div>
+
+        <div class="order-summary">
+            <div class="summary-row">
+                <span>Subtotal</span>
+                <span>${{ flight.price * travellers_num }}</span>
+            </div>
+            <div class="summary-row">
+                <span>Fees & Taxes</span>
+                <span>$0.00</span>
+            </div>
+            <div class="summary-row total-row">
+                <span>Total</span>
+                <span>${{ flight.price * travellers_num }}</span>
+            </div>
+        </div>
+
+        <div class="secure-note">
+            🔒 Secure SSL Encrypted Payment
+        </div>
+
+        <button type="submit" class="btn-submit">Pay ${{ flight.price * travellers_num }}</button>
+        <div class="hint">Your payment is processed securely and your card details are not stored.</div>
+        <div id="message" class="message"></div>
+    </form>
+</div>
+
+<script>
+  const FLIGHT_NAME = "{{ flight.flight_name }}";
+  const FLIGHT_PRICE = Number("{{ flight.price }}");
+  const TRAVELLERS_NUMBER = Number("{{ travellers_num }}");
+  const TOTAL_AMOUNT = FLIGHT_PRICE * TRAVELLERS_NUMBER;
+</script>
+
+<script>
+    const methodOptions = document.querySelectorAll(".method-option");
+    const cardSection = document.getElementById("cardSection");
+    const paypalSection = document.getElementById("paypalSection");
+    const paymentForm = document.getElementById("paymentForm");
+    const messageBox = document.getElementById("message");
+    let currentMethod = "saved_visa";
+
+    methodOptions.forEach(option => {
+        option.addEventListener("click", () => {
+            methodOptions.forEach(o => o.classList.remove("active"));
+            option.classList.add("active");
+
+            const input = option.querySelector("input");
+            currentMethod = input ? input.value : "new_card";
+
+            cardSection.classList.remove("active");
+            paypalSection.classList.remove("active");
+
+            if (currentMethod === "saved_visa") {
+                cardSection.classList.add("active");
+            } else if (currentMethod === "paypal") {
+                paypalSection.classList.add("active");
+            } else if (currentMethod === "new_card") {
+                cardSection.classList.add("active");
+            }
+        });
+    });
+
+    // Initially show card section for default saved_visa
+    if (currentMethod === "saved_visa") {
+        cardSection.classList.add("active");
+    }
+
+    const cardNumberInput = document.getElementById("cardNumber");
+    cardNumberInput.addEventListener("input", (e) => {
+        let value = e.target.value.replace(/\D/g, "").slice(0,16);
+        let formatted = value.match(/.{1,4}/g);
+        e.target.value = formatted ? formatted.join(" ") : "";
+    });
+
+    // Format expiry input (MM/YY)
+    const expiryInput = document.getElementById("expiry");
+    expiryInput.addEventListener("input", (e) => {
+        let value = e.target.value.replace(/\D/g, "").slice(0, 4);
+        if (value.length >= 2) {
+            value = value.slice(0, 2) + "/" + value.slice(2);
+        }
+        e.target.value = value;
+    });
+
+    paymentForm.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        messageBox.style.display = "none";
+        messageBox.className = "message";
+
+        const activeMethod = currentMethod;
+
+        if (!activeMethod) {
+            showMessage("Please select a payment method.", "error");
+            return;
+        }
+
+        // Validation based on method
+        if (activeMethod.startsWith("saved_")) {
+            // No additional validation for saved cards
+        } else if (activeMethod === "new_card") {
+            const name = document.getElementById("cardName").value.trim();
+            const number = document.getElementById("cardNumber").value.replace(/\s/g, "");
+            const expiry = document.getElementById("expiry").value.trim();
+            const cvv = document.getElementById("cvv").value.trim();
+
+            if (!name || !number || !expiry || !cvv) {
+                showMessage("Please fill in all card details.", "error");
+                return;
+            }
+            if (number.length < 13) {
+                showMessage("Card number looks too short.", "error");
+                return;
+            }
+        } else if (activeMethod === "paypal") {
+            const email = document.getElementById("paypalEmail").value.trim();
+            if (!email) {
+                showMessage("Please enter your PayPal email.", "error");
+                return;
+            }
+        }
+
+        try {
+            const backendMethod = activeMethod.startsWith("saved_") || activeMethod === "new_card" ? "stripe" : "paypal";
+            const res = await fetch("/process_payment", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    flight_id: Number("{{ flight.flight_id }}"),
+                    travellers: Number("{{ travellers_num }}"),
+                    payment_method: backendMethod
+                })
+            });
+
+            const data = await res.json();
+
+            if (res.status === 401) {
+                // Unauthorized - redirect to login
+                showMessage("Please log in to continue.", "error");
+                setTimeout(() => {
+                    window.location.href = "/login";
+                }, 1500);
+                return;
+            }
+
+            if (!res.ok || !data.success) {
+                const msg = (data && data.message) ? data.message : "Payment failed.";
+                showMessage(msg, "error");
+                return;
+            }
+
+            // Save ticket summary
+            sessionStorage.setItem("ticketSummary", JSON.stringify(data.ticket_summary));
+
+            showMessage("Payment successful! Redirecting...", "success");
+            setTimeout(() => {
+                window.location.href = "/ticket-summary-page";
+            }, 800);
+
+        } catch (err) {
+            console.error(err);
+            showMessage("Network error while processing payment.", "error");
+        }
+    });
+
+    function showMessage(text, type) {
+        messageBox.textContent = text;
+        messageBox.classList.add(type);
+        messageBox.style.display = "block";
+    }
+</script>
+
+</body>
+</html>

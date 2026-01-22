@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Available Flights - CloudTrip</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #f8f9fa;
+      padding: 20px 0;
+    }
+
+    .navbar-custom {
+      background-color: white;
+      border-bottom: 1px solid #e0e0e0;
+      padding: 10px 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .navbar-brand {
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: #1a1a1a;
+    }
+
+    .nav-link {
+      color: #6c757d;
+      font-weight: 500;
+      margin-right: 20px;
+    }
+
+    .nav-link:hover {
+      color: #0d6efd;
+    }
+
+    .notification-bell {
+      color: #6c757d;
+      font-size: 1.2rem;
+    }
+
+    .search-header {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      border: 1px solid #e0e0e0;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .search-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 5px;
+      color: #1a1a1a;
+    }
+
+    .edit-search {
+      color: #0d6efd;
+      font-size: 0.9rem;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .edit-search:hover {
+      text-decoration: underline;
+    }
+
+    .date-info {
+      color: #6c757d;
+      font-size: 0.95rem;
+      margin-top: 10px;
+    }
+
+    #flightsContainer {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .flight-card {
+      background: white;
+      border: 1px solid #e3e8f0;
+      border-radius: 12px;
+      padding: 24px;
+      display: flex;
+      align-items: flex-start;
+      gap: 24px;
+      transition: box-shadow 0.2s;
+      position: relative;
+    }
+
+    .flight-card:hover {
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    }
+
+    .flight-card.selected {
+      background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);
+      border-color: #0d6efd;
+      box-shadow: 0 4px 12px rgba(13, 110, 253, 0.15);
+    }
+
+    .flight-card.selected:hover {
+      box-shadow: 0 8px 24px rgba(13, 110, 253, 0.2);
+    }
+
+    .flight-content {
+      display: flex;
+      width: 100%;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .airline-section {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 120px;
+    }
+
+    .airline-logo {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 0.8rem;
+    }
+
+    .airline-name {
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: #1a1a1a;
+    }
+
+    .flight-number {
+      font-size: 0.85rem;
+      color: #6c757d;
+      font-weight: 500;
+    }
+
+    .time-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      min-width: 80px;
+    }
+
+    .dep-time, .arr-time {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #1a1a1a;
+      line-height: 1.2;
+    }
+
+    .dep-airport, .arr-airport {
+      font-size: 0.8rem;
+      color: #6c757d;
+      font-weight: 500;
+      text-transform: uppercase;
+    }
+
+    .airplane-icon {
+      font-size: 1.2rem;
+      color: #9ca3af;
+      margin: 0 12px;
+      display: flex;
+      align-items: center;
+    }
+
+    .duration-section {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2px;
+      min-width: 100px;
+      margin-left: auto;
+      text-align: right;
+    }
+
+    .duration {
+      font-size: 0.85rem;
+      color: #6c757d;
+      font-weight: 500;
+    }
+
+    .stops {
+      font-size: 0.8rem;
+      color: #9ca3af;
+    }
+
+    .price-section {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+      min-width: 100px;
+      margin-left: auto;
+    }
+
+    .price {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #1a1a1a;
+    }
+
+    .seats-left {
+      font-size: 0.8rem;
+      color: #ef4444;
+      font-weight: 500;
+    }
+
+    .btn-select-flight {
+      background: #0d6efd;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 16px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-top: 8px;
+    }
+
+    .btn-select-flight:hover {
+      background: #0b5ed7;
+    }
+
+    .no-flights {
+      text-align: center;
+      padding: 40px;
+      color: #6c757d;
+    }
+
+    /* Styles for static Jinja flights to match photo layout */
+    .results-card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      border: 1px solid #e0e0e0;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .results-card h3 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: #1a1a1a;
+    }
+
+    .results-card .text-muted {
+      color: #6c757d !important;
+      font-size: 0.95rem;
+    }
+
+    .flight-item {
+      background: white;
+      border: 1px solid #e3e8f0;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      position: relative;
+    }
+
+    .flight-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .flight-route {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      color: #6c757d;
+      text-transform: uppercase;
+    }
+
+    .flight-meta > div:first-child {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .chip {
+      background: #f1f5f9;
+      padding: 4px 8px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      color: #475569;
+      font-weight: 500;
+    }
+
+    .flight-meta > div:nth-child(2) {
+      font-size: 0.85rem;
+      color: #64748b;
+    }
+
+    .flight-meta > div:last-child {
+      font-size: 0.85rem;
+      color: #64748b;
+    }
+
+    .price-block {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+      min-width: 120px;
+      text-align: right;
+    }
+
+    .price-block .price {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #1a1a1a;
+    }
+
+    .price-block .currency {
+      font-size: 0.8rem;
+      color: #9ca3af;
+    }
+
+    .btn-pay {
+      background: #0d6efd;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 16px;
+      font-weight: 600;
+      margin-top: 8px;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 0.9rem;
+    }
+
+    .btn-pay:hover {
+      background: #0b5ed7;
+      color: white;
+    }
+
+    /* Responsive for static */
+    @media (max-width: 768px) {
+      .flight-item {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 16px;
+      }
+
+      .price-block {
+        align-items: center;
+        text-align: center;
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .flight-card {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 20px;
+        gap: 16px;
+      }
+
+      .flight-content {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 16px;
+      }
+
+      .airline-section, .time-section, .duration-section, .price-section {
+        align-items: stretch;
+        text-align: center;
+        min-width: auto;
+      }
+
+      .airplane-icon {
+        order: -1;
+        align-self: center;
+        margin: 0;
+      }
+
+      .dep-time, .arr-time, .price {
+        font-size: 1.2rem;
+      }
+    }
+
+    /* Keep existing styles for compatibility, but overridden where needed */
+    .flight-header { display: none; } /* Hide old header */
+    .flight-info { padding: 0; } /* Adjust old info */
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-custom">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">CloudTrip</a>
+      <div class="navbar-nav ms-auto">
+        <a class="nav-link" href="#">My Trips</a>
+        <a class="nav-link" href="#">Help</a>
+        <i class="fas fa-bell notification-bell nav-link" style="margin-left: 10px;"></i>
+      </div>
+    </div>
+  </nav>
+
+  <div class="page-wrapper">
+    <div class="container">
+      <div id="searchSummary" class="search-header" style="display: none;">
+        <!-- Dynamically populated by JS -->
+      </div>
+
+      <div id="resultsCard" class="results-card">
+        <h3 class="mb-2">Available flights</h3>
+        {% set travellers_num = (search_info.travellers or 1) | int %}
+        {% if search_info %}
+          <p class="text-muted small mb-3">
+            From <strong>{{ search_info.from_city }}</strong>
+            to <strong>{{ search_info.to_city }}</strong>
+            on <strong>{{ search_info.depart_date }}</strong>
+            {% if search_info.return_date %}
+              – return <strong>{{ search_info.return_date }}</strong>
+            {% endif %}
+            · Travellers: <strong>{{ travellers_num }}</strong>
+            {% if search_info.flight_class %}
+              · Class: <strong>{{ search_info.flight_class|capitalize }}</strong>
+            {% endif %}
+          </p>
+        {% elif flights and flights|length > 0 %}
+          {% set first = flights[0] %}
+          <p class="text-muted small mb-3">
+            From <strong>{{ first.from_city or first.from_airport or first['from'] }}</strong>
+            to <strong>{{ first.to_city or first.to_airport or first['to'] }}</strong>
+            {% if first.date %} on <strong>{{ first.date }}</strong>{% endif %}
+            · Travellers: <strong>{{ travellers_num }}</strong>
+          </p>
+        {% else %}
+        {% endif %}
+
+        {% if flights %}
+          {% for f in flights %}
+            <div class="flight-item">
+              <div class="flight-main">
+                <div class="flight-route">
+                  <span class="code">{{ f.from_airport or f['from'] or f.from_city or '' }}</span>
+                  <span class="arrow">➜</span>
+                  <span class="code">{{ f.to_airport or f['to'] or f.to_city or '' }}</span>
+                </div>
+                <div class="flight-meta">
+                  <div>
+                    <span class="chip">{{ f.airline or 'Unknown Airline' }}</span>
+                    {% if f.flight_name or f.flight_id %}
+                      <span class="chip">Flight: {{ f.flight_name or ('#' ~ f.flight_id) }}</span>
+                    {% endif %}
+                  </div>
+                  <div>
+                    {{ f.from_city or f.from_airport or f['from'] or '' }}
+                    {% if f.get('from_country') %}, {{ f.from_country }}{% endif %}
+                    &rarr;
+                    {{ f.to_city or f.to_airport or f['to'] or '' }}
+                    {% if f.get('to_country') %}, {{ f.to_country }}{% endif %}
+                  </div>
+                  <div>
+                    Departure: {{ f.departure_time.strftime('%Y-%m-%d %H:%M') if f.departure_time else 'TBD' }} · Arrival: {{ f.arrival_time.strftime('%Y-%m-%d %H:%M') if f.arrival_time else 'TBD' }} · Duration: {{ f.duration or 'N/A' }}
+                  </div>
+                </div>
+              </div>
+              <div class="price-block">
+                <div class="price">
+                  ${{ "%.2f"|format(f.price or 0) }}
+                </div>
+                <div class="currency text-muted small">
+                  per traveller
+                </div>
+                <div class="currency text-muted small">
+                  Group total: ${{ "%.2f"|format((f.price or 0) * travellers_num) }}
+                </div>
+                <a href="#" onclick='selectStaticFlight(this)' data-flight='{{ f|tojson|replace("'", "\\'") }}' data-travellers='{{ travellers_num }}'
+                   class="btn btn-primary btn-sm btn-pay">
+                  Select Flight
+                </a>
+              </div>
+            </div>
+          {% endfor %}
+        {% endif %}
+      </div>
+
+      <div id="flightsContainer"></div>
+      <div id="noFlightsMsg" class="no-flights d-none">
+        <i class="fas fa-plane fa-3x mb-3" style="color: #6c757d;"></i>
+        <h4>No flights available</h4>
+        <p>Try adjusting your search criteria.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      const container = document.getElementById("flightsContainer");
+      const noFlightsMsg = document.getElementById("noFlightsMsg");
+      const searchSummary = document.getElementById("searchSummary");
+      const resultsCard = document.getElementById("resultsCard");
+
+      // Show static results by default
+      if (resultsCard) {
+        resultsCard.style.display = 'block';
+      }
+
+      const searchPayload = JSON.parse(sessionStorage.getItem("flightSearch"));
+
+      if (!searchPayload) {
+        return; // Static will show
+      }
+
+      // Optionally populate search summary if you want to replace the h3/p in static
+      // For now, keep static title
+
+      try {
+        const res = await fetch("/search-flights", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(searchPayload)
+        });
+
+        const data = await res.json();
+
+        if (!data.success || data.flights.length === 0) {
+          console.log('No flights from API, using static');
+          return;
+        }
+
+        // Hide static and show dynamic
+        if (resultsCard) {
+          resultsCard.style.display = 'none';
+        }
+        noFlightsMsg.classList.add("d-none");
+
+        // Populate search summary
+        const fromCity = searchPayload.from_city || searchPayload.from || 'New York';
+        const toCity = searchPayload.to_city || searchPayload.to || 'London';
+        const fromCode = searchPayload.from_airport || searchPayload.from_code || 'JFK';
+        const toCode = searchPayload.to_airport || searchPayload.to_code || 'LHR';
+        const departDate = new Date(searchPayload.depart_date).toLocaleDateString('en-US', { 
+          weekday: 'long', 
+          month: 'long', 
+          day: 'numeric' 
+        });
+        const totalFlights = data.total_flights || data.flights.length || 50;
+        const shownFlights = data.flights.length;
+
+        searchSummary.innerHTML = `
+          <div class="search-title">
+            Flights from <strong>${fromCity} (${fromCode})</strong> to <strong>${toCity} (${toCode})</strong>
+            <a href="#" class="edit-search ms-2">Edit search</a>
+          </div>
+          <div class="date-info">
+            ${departDate} · Showing ${shownFlights} of ${totalFlights} flights
+          </div>
+        `;
+        searchSummary.style.display = 'block';
+
+        data.flights.forEach(f => {
+          let logoInitial = f.airline ? f.airline.charAt(0).toUpperCase() : 'U';
+          let logoColor = '#ff6b6b';
+          if (f.airline && f.airline.toLowerCase().includes('american')) {
+            logoInitial = 'AA';
+            logoColor = '#c8102e';
+          } else if (f.airline && f.airline.toLowerCase().includes('delta')) {
+            logoInitial = 'DL';
+            logoColor = '#0051a3';
+          } else if (f.airline && (f.airline.toLowerCase().includes('british') || f.airline.toLowerCase().includes('airways'))) {
+            logoInitial = 'BA';
+            logoColor = '#c8102e';
+          }
+
+          const stops = f.stops || 0;
+          const stopsText = stops === 0 ? 'direct' : `${stops} stop${stops > 1 ? 's' : ''}`;
+          const seatsLeft = f.seats_left || Math.floor(Math.random() * 10) + 1;
+
+          const card = document.createElement("div");
+          card.className = "flight-card";
+          card.style.cursor = "pointer";
+
+          card.innerHTML = `
+            <div class="flight-content">
+              <div class="airline-section">
+                <div class="airline-logo" style="background: ${logoColor};">${logoInitial}</div>
+                <div class="airline-name">${f.airline || "Unknown Airline"}</div>
+                <div class="flight-number">Flight ${f.flight_name || f.flight_id || 'N/A'}</div>
+              </div>
+
+              <div class="time-section">
+                <div class="dep-time">${f.departure_time || "TBD"}</div>
+                <div class="dep-airport">${f.from || f.from_airport || 'JFK'}</div>
+              </div>
+
+              <div class="airplane-icon">
+                <i class="fas fa-plane"></i>
+              </div>
+
+              <div class="time-section">
+                <div class="arr-time">${f.arrival_time || "TBD"}</div>
+                <div class="arr-airport">${f.to || f.to_airport || 'LHR'}</div>
+              </div>
+
+              <div class="duration-section">
+                <div class="duration">${f.duration || "N/A"}</div>
+                <div class="stops">${stopsText}</div>
+              </div>
+
+              <div class="price-section">
+                <div class="price">$${parseFloat(f.price || 0).toFixed(0)}</div>
+                <div class="seats-left">${seatsLeft} seats left</div>
+                <button class="btn-select-flight" onclick="event.stopPropagation(); selectFlight(${JSON.stringify(f).replace(/'/g, '\\\'')})">
+                  Select Flight
+                </button>
+              </div>
+            </div>
+          `;
+
+          // Add click listener to entire card
+          card.addEventListener('click', (e) => {
+            if (e.target.tagName !== 'BUTTON') { // Avoid double-trigger on button
+              // Remove selected from all cards
+              document.querySelectorAll('.flight-card.selected').forEach(c => c.classList.remove('selected'));
+              // Add to this card
+              card.classList.add('selected');
+            }
+          });
+
+          container.appendChild(card);
+        });
+
+      } catch (err) {
+        console.error('Error fetching flights:', err);
+        // Keep static visible on error
+      }
+    });
+
+    function selectFlight(flight) {
+      // Normalize flight data keys for consistency
+      flight.from_city = flight.from_city || flight.from;
+      flight.to_city = flight.to_city || flight.to;
+      flight.from_airport = flight.from_airport || flight.from_code || flight.from;
+      flight.to_airport = flight.to_airport || flight.to_code || flight.to;
+
+      sessionStorage.setItem("selectedFlight", JSON.stringify(flight));
+      // Also store in session for server-side access
+      fetch('/store_selected_flight', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(flight)
+      }).catch(err => console.error('Failed to store flight:', err));
+
+      const searchPayload = JSON.parse(sessionStorage.getItem("flightSearch"));
+      const travellers = searchPayload ? (searchPayload.travellers_number || searchPayload.travellers || 1) : 1;
+      window.location.href = "/travellers/" + flight.flight_id + "?travellers=" + travellers;
+    }
+
+    function selectStaticFlight(element) {
+      const flight = JSON.parse(element.getAttribute('data-flight'));
+      const travellers_num = element.getAttribute('data-travellers');
+
+      // Normalize flight data keys for consistency
+      flight.from_city = flight.from_city || flight.from;
+      flight.to_city = flight.to_city || flight.to;
+      flight.from_airport = flight.from_airport || flight.from_code || flight.from;
+      flight.to_airport = flight.to_airport || flight.to_code || flight.to;
+
+      sessionStorage.setItem("selectedFlight", JSON.stringify(flight));
+      // Also store in session for server-side access
+      fetch('/store_selected_flight', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(flight)
+      }).catch(err => console.error('Failed to store flight:', err));
+
+      window.location.href = "/travellers/" + flight.flight_id + "?travellers=" + travellers_num;
+    }
+  </script>
+
+</body>
+</html>

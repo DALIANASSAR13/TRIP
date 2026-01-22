@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight & Traveler Details - FlightBooker</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+            padding: 0;
+            margin: 0;
+        }
+        .header {
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #3b82f6;
+        }
+        .nav-links {
+            display: flex;
+            gap:24px;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: #6b7280;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .nav-links a:hover {
+            color: #3b82f6;
+        }
+        .progress-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 800px;
+  margin: 0 auto 40px;
+  position: relative;
+}
+
+.progress-nav::before {
+  content: "";
+  position: absolute;
+  top: 16px;
+  left: 40px;
+  right: 40px;
+  height: 2px;
+  background-color: #dee2e6;
+  z-index: 0;
+}
+
+
+.progress-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 1;
+  min-width: 120px;
+  text-align: center;
+}
+
+
+.step-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #e0e0e0;
+  color: #6c757d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+
+.progress-step.completed .step-circle {
+  background-color: #198754;
+  color: #fff;
+}
+
+.progress-step.active .step-circle {
+  background-color: #0d6efd;
+  color: #fff;
+}
+
+
+.step-label {
+  margin-top: 8px;
+  font-size: 0.85rem;
+  color: #6c757d;
+}
+
+.progress-step.active .step-label {
+  color: #0d6efd;
+  font-weight: 600;
+}
+
+        .main-container {
+            max-width: 1000px;
+            margin: 32px auto;
+            padding: 0 24px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .title {
+            padding: 24px;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #111827;
+            background: #f9fafb;
+        }
+        .content-row {
+            display: flex;
+            gap: 0;
+        }
+        .flight-summary {
+            flex: 1;
+            padding: 32px;
+            border-right: 1px solid #e5e7eb;
+        }
+        .summary-header {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 24px;
+        }
+        .departure-info, .arrival-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .plane-icon {
+            width: 20px;
+            height: 20px;
+            background: #3b82f6;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.75rem;
+        }
+        .city-name {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #111827;
+        }
+        .airport-code {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        .time {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin: 0;
+        }
+        .details-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 16px 0;
+            padding: 8px 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        .details-row:last-child {
+            border-bottom: none;
+        }
+        .detail-label {
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+        .detail-value {
+            font-weight: 600;
+            color: #111827;
+        }
+        .total-price {
+            background: #eff6ff;
+            padding: 16px;
+            border-radius: 8px;
+            text-align: center;
+            margin-top: 24px;
+        }
+        .total-amount {
+            font-size: 1.875rem;
+            font-weight: bold;
+            color: #3b82f6;
+            margin: 0 0 4px 0;
+        }
+        .total-label {
+            color: #6b7280;
+            font-size: 0.875rem;
+            margin: 0;
+        }
+        .traveler-section {
+            flex: 1;
+            padding: 32px;
+        }
+        .traveler-header {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 8px;
+        }
+        .traveler-subtitle {
+            color: #6b7280;
+            font-size: 0.875rem;
+            margin-bottom: 24px;
+        }
+        .traveler-selector {
+            margin-bottom: 24px;
+        }
+        .traveler-selector label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 4px;
+        }
+        .traveler-selector select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 1rem;
+            background: white;
+        }
+        .traveler-selector select:focus {
+            border-color: #3b82f6;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        .traveler-card {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+        .traveler-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 12px;
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-row {
+            display: flex;
+            gap: 16px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 4px;
+        }
+        .form-control {
+            padding: 12px 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+        .form-control:focus {
+            border-color: #3b82f6;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        .btn-confirm {
+            background: #3b82f6;
+            color: white;
+            padding: 12px 32px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.2s;
+        }
+        .btn-confirm:hover {
+            background: #2563eb;
+        }
+        @media (max-width: 768px) {
+            .content-row {
+                flex-direction: column;
+            }
+            .flight-summary {
+                border-right: none;
+                border-bottom: 1px solid #e5e7eb;
+            }
+            .progress-bar {
+                padding: 16px;
+                gap: 16px;
+            }
+            .progress-step {
+                flex: none;
+                min-width: 60px;
+            }
+            .step-line {
+                display: none;
+            }
+            .step-label {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">Cloud Trip</div>
+    
+    </header>
+
+    <!-- Horizontal Progress Bar -->
+<div class="container-fluid px-5">
+    
+</div>
+
+<nav class="progress-nav mb-5">
+  <div class="progress-step completed">
+    <span class="step-circle">1</span>
+    <span class="step-label">Flight Search</span>
+  </div>
+
+  <div class="progress-step completed">
+    <span class="step-circle">2</span>
+    <span class="step-label">Select Flight</span>
+  </div>
+
+  <div class="progress-step active">
+    <span class="step-circle">3</span>
+    <span class="step-label">Traveler Details</span>
+  </div>
+
+  <div class="progress-step">
+    <span class="step-circle">4</span>
+    <span class="step-label">Payment</span>
+  </div>
+</nav>
+
+    <div class="main-container">
+    
+        <div class="title">Flight & Traveler Details</div>
+
+        <!-- Content -->
+        <div class="content-row">
+            <!-- Flight Summary (Extended with User-Chosen Flight Details) -->
+            <div class="flight-summary">
+                <div class="summary-header">Flight Summary</div>
+                
+                <div class="departure-info">
+                    <div class="plane-icon">✈</div>
+                    <div>
+                        <div class="city-name">{{ flight.from_city }} ({{ flight.from_airport }})</div>
+                        <p class="time">{{ flight.departure_time or 'TBD' }}</p>
+                    </div>
+                </div>
+
+                <div class="departure-info">
+                    <div class="plane-icon">✈</div>
+                    <div>
+                        <div class="city-name">{{ flight.to_city }} ({{ flight.to_airport }})</div>
+                        <p class="time">{{ flight.arrival_time or 'TBD' }}</p>
+                    </div>
+                </div>
+
+                <div class="details-row">
+                    <span class="detail-label">Airline:</span>
+                    <span class="detail-value">{{ flight.airline }}</span>
+                </div>
+                <div class="details-row">
+                    <span class="detail-label">Flight No:</span>
+                    <span class="detail-value">{{ flight.flight_name or flight.flight_id }}</span>
+                </div>
+                <div class="details-row">
+                    <span class="detail-label">Duration:</span>
+                    <span class="detail-value">{{ flight.duration or 'N/A' }}</span>
+                </div>
+             
+               
+                <div class="details-row">
+                    <span class="detail-label">Price per person:</span>
+                    <span class="detail-value">${{ flight.price }}</span>
+                </div>
+
+                <div class="total-price">
+                    <div class="total-amount" id="totalPrice">${{ (flight.price or 0) * travellers_num }}</div>
+                    <p class="total-label" id="totalLabel">Total Price for <span id="travellerCount">{{ travellers_num }}</span> Traveler{{ 's' if travellers_num > 1 else '' }}</p>
+                </div>
+            </div>
+
+            <!-- Traveler Details -->
+            <div class="traveler-section">
+                <div class="traveler-header">Traveler Details</div>
+                <p class="traveler-subtitle">Please fill in the details for your travelers</p>
+
+
+
+                <form id="travellersForm">
+                    <input type="hidden" name="flight_id" value="{{ flight.flight_id }}">
+                    <input type="hidden" name="total_amount" id="totalAmountHidden" value="1080">
+
+                    <div id="travellersContainer">
+                        <!-- Traveler forms will be dynamically generated here -->
+                    </div>
+
+                    <button type="submit" class="btn-confirm">Confirm & Continue</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const flightPrice = "{{ flight.price }}"; // From user-chosen flight
+        const travellersCount = "{{ travellers_num }}"; // From user choice
+
+        function createTravelerForm(index) {
+            return `
+                <div class="traveler-card">
+                    <div class="traveler-title">Traveler ${index + 1}</div>
+                    <p class="traveler-subtitle">Please enter the details as they appear on the passport or government-issued ID.</p>
+                    
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" class="form-control" name="full_name_${index}" placeholder="e.g., John Doe" required>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group" style="flex: 1;">
+                            <label>Age</label>
+                            <input type="number" class="form-control" name="age_${index}" placeholder="e.g., 30" min="1" max="120" required>
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label>Passport or ID Number</label>
+                            <input type="text" class="form-control" name="passport_number_${index}" placeholder="e.g., X1234567" required>
+                        </div>
+                    </div>
+                    <!-- Hidden fields -->
+                    <input type="hidden" name="nationality_${index}" value="Not Provided">
+                    <input type="hidden" name="gender_${index}" value="Not Specified">
+                    <input type="hidden" name="email_${index}" value="user@example.com">
+                    <input type="hidden" name="phone_number_${index}" value="Not Provided">
+                </div>
+            `;
+        }
+
+        function renderTravellerForms(count) {
+            const container = document.getElementById('travellersContainer');
+            container.innerHTML = '';
+            for (let i = 0; i < count; i++) {
+                container.innerHTML += createTravelerForm(i);
+            }
+            // Update total price and label
+            const total = flightPrice * count;
+            document.getElementById('totalPrice').textContent = `$${total}`;
+            document.getElementById('totalLabel').innerHTML = `Total Price for <span id="travellerCount">${count}</span> Traveler${count > 1 ? 's' : ''}`;
+            document.getElementById('totalAmountHidden').value = total;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const travellersCount = parseInt("{{ travellers_num }}") || 1;
+            renderTravellerForms(travellersCount); // Render forms based on backend value
+
+            const form = document.getElementById('travellersForm');
+
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                const travellers = [];
+                let isValid = true;
+
+                for (let i = 0; i < travellersCount; i++) {
+                    const fullName = document.querySelector(`[name="full_name_${i}"]`).value.trim();
+                    const age = document.querySelector(`[name="age_${i}"]`).value;
+                    const passportNumber = document.querySelector(`[name="passport_number_${i}"]`).value.trim();
+
+                    // Validate full name (letters only, spaces allowed)
+                    const nameRegex = /^[a-zA-Z\s]+$/;
+                    if (!fullName) {
+                        alert(`Full name is required for Traveler ${i + 1}`);
+                        isValid = false;
+                        break;
+                    }
+                    if (!nameRegex.test(fullName)) {
+                        alert(`Full name should contain only letters and spaces for Traveler ${i + 1}`);
+                        isValid = false;
+                        break;
+                    }
+
+                    // Validate age
+                    if (!age || parseInt(age) < 1 || parseInt(age) > 120) {
+                        alert(`Please enter a valid age (1-120) for Traveler ${i + 1}`);
+                        isValid = false;
+                        break;
+                    }
+
+                    // Validate passport number (must contain both letters and numbers)
+                    const passportRegex = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]+$/;
+                    if (!passportNumber) {
+                        alert(`Passport number is required for Traveler ${i + 1}`);
+                        isValid = false;
+                        break;
+                    }
+                    if (!passportRegex.test(passportNumber)) {
+                        alert(`Passport number must contain both letters and numbers for Traveler ${i + 1}`);
+                        isValid = false;
+                        break;
+                    }
+
+                    travellers.push({
+                        full_name: fullName,
+                        age: parseInt(age),
+                        passport_number: passportNumber,
+                        nationality: document.querySelector(`[name="nationality_${i}"]`).value,
+                        gender: document.querySelector(`[name="gender_${i}"]`).value,
+                        email: document.querySelector(`[name="email_${i}"]`).value,
+                        phone_number: document.querySelector(`[name="phone_number_${i}"]`).value
+                    });
+                }
+
+                if (!isValid) return;
+
+                const formData = new FormData();
+                formData.append('travellers', JSON.stringify(travellers));
+                formData.append('flight_id', '{{ flight.flight_id }}');
+                formData.append('total_amount', flightPrice * travellersCount);
+
+                try {
+                    const response = await fetch('/traveller', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const data = await response.json();
+                    if (data.success) {
+                        window.location.href = `/payment/{{ flight.flight_id }}?travellers=${travellersCount}&total_amount=${flightPrice * travellersCount}`;
+                    } else {
+                        alert('Error saving traveler details: ' + (data.error || 'Unknown error'));
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Network error. Please try again.');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Traveller Details - CloudTrip</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+  body { font-family: Arial, sans-serif; background: #f8f9fa; padding: 20px; }
+  .step-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+  
+.progress-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 800px;
+  margin: 0 auto 40px;
+  position: relative;
+}
+
+
+.progress-nav::before {
+  content: "";
+  position: absolute;
+  top: 16px;
+  left: 40px;
+  right: 40px;
+  height: 2px;
+  background-color: #dee2e6;
+  z-index: 0;
+}
+
+
+.progress-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 1;
+  min-width: 120px;
+  text-align: center;
+}
+
+
+.step-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #e0e0e0;
+  color: #6c757d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+.progress-step.completed .step-circle {
+  background-color: #198754;
+  color: #fff;
+}
+
+.progress-step.active .step-circle {
+  background-color: #0d6efd;
+  color: #fff;
+}
+
+
+.step-label {
+  margin-top: 8px;
+  font-size: 0.85rem;
+  color: #6c757d;
+}
+
+.progress-step.active .step-label {
+  color: #0d6efd;
+  font-weight: 600;
+}
+
+
+  .card-custom {
+   padding: 30px;
+  }
+  
+  .card-header-custom {
+    background: white;
+    border-bottom: 1px solid #eaeaea;
+    padding: 20px;
+  }
+  
+  .flight-summary {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 20px;
+  }
+  
+  .flight-route {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 15px 0;
+  }
+  
+  .route-dot {
+    width: 10px;
+    height: 10px;
+    background: #007bff;
+    border-radius: 50%;
+    position: relative;
+  }
+  
+  .route-line {
+    flex: 1;
+    height: 2px;
+    background: #007bff;
+    margin: 0 15px;
+  }
+  
+  .departure, .arrival {
+    flex: 1;
+  }
+  
+  .traveller-section {
+    border-bottom: 1px solid #eaeaea;
+    padding-bottom: 25px;
+    margin-bottom: 25px;
+  }
+  
+  .traveller-section:last-child {
+    border-bottom: none;
+  }
+  
+  .form-label {
+    font-weight: 600;
+    margin-bottom: 8px;
+    display: block;
+  }
+  
+  .btn-confirm {
+    background: #007bff;
+    color: white;
+    padding: 12px 40px;
+    font-weight: 600;
+    border-radius: 8px;
+    border: none;
+  }
+  
+  .btn-confirm:hover {
+    background: #0056b3;
+  }
+  
+  .text-muted-small {
+    font-size: 14px;
+    color: #6c757d;
+    margin-bottom: 15px;
+    display: block;
+  }
+  
+  .price-highlight {
+    font-size: 24px;
+    font-weight: bold;
+    color: #007bff;
+  }
+  .form-control {
+  padding: 14px 16px;
+  font-size: 1rem;
+  border-radius: 10px;
+}
+.form-label {
+  font-size: 0.95rem;
+  font-weight: 600;
+} -->
+
+  
+<!-- 
+</style>
+</head>
+<body>
+<div class="container-fluid px-5">
+    
+</div>">
+
+<nav class="progress-nav mb-5">
+  <div class="progress-step completed">
+    <span class="step-circle">1</span>
+    <span class="step-label">Flight Search</span>
+  </div>
+
+  <div class="progress-step completed">
+    <span class="step-circle">2</span>
+    <span class="step-label">Select Flight</span>
+  </div>
+
+  <div class="progress-step active">
+    <span class="step-circle">3</span>
+    <span class="step-label">Traveler Details</span>
+  </div>
+
+  <div class="progress-step">
+    <span class="step-circle">4</span>
+    <span class="step-label">Payment</span>
+  </div>
+</nav>
+
+
+
+  <h2 class="mb-4"></h2>
+
+  <div class="row">
+    <div class="col-lg-4 col-md-5 col-sm-12">
+      <div class="card-custom">
+        <div class="card-header-custom">
+          <h5>Flight Summary</h5>
+        </div>
+        <div class="card-body">
+          <div class="flight-route">
+            <div class="departure">
+              <h6 class="text-muted">Departure</h6>
+              <h5>{{ flight.from_city }} ({{ flight.from_airport }})</h5>
+              <p class="mb-0">{{ flight.departure_time or 'N/A' }}</p>
+            </div>
+            <div class="route-dot"></div>
+            <div class="route-line"></div>
+            <div class="route-dot"></div>
+            <div class="arrival">
+              <h6 class="text-muted">Arrival</h6>
+              <h5>{{ flight.to_city }} ({{ flight.to_airport }})</h5>
+              <p class="mb-0">{{ flight.arrival_time or 'N/A' }}</p>
+            </div>
+          </div>
+          
+          <div class="mb-4">
+            <p class="mb-1"><strong>Airline:</strong> {{ flight.airline }}</p>
+            <p class="mb-1"><strong>Flight No:</strong> {{ flight.flight_name }}</p>
+            <p class="mb-1"><strong>Price per person:</strong> ${{ flight.price }}</p>
+          </div>
+          
+          <div class="flight-summary">
+            <h5 class="price-highlight" id="totalPrice">${{ flight.price * travellers_num }}</h5>
+            <p class="text-muted mb-0">Total Price for <span id="travellerCount">{{ travellers_num }}</span> Traveller{{ 's' if travellers_num > 1 else '' }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="col-md-7 ms-lg-4">
+      <div class="card-custom">
+        <div class="card-header-custom">
+          <h5 class="mb-0">Traveller Details</h5>
+          <p class="text-muted mb-0 mt-1">Please fill in the details for {{ travellers_num }} traveller{{ 's' if travellers_num > 1 else '' }}</p>
+        </div>
+        <div class="card-body">
+          <form id="travellersForm" method="POST" action="/traveller">
+            <input type="hidden" name="flight_id" value="{{ flight.flight_id }}">
+            <input type="hidden" name="user_id" value="{{ session.get('user_id') }}">
+            <input type="hidden" name="total_amount" id="totalAmountHidden" value="{{ flight.price * travellers_num }}">
+
+            <div id="travellersContainer">
+             
+            </div>
+
+            <div class="text-end">
+              <button type="submit" class="btn btn-confirm">Confirm & Continue</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> -->
+
+<!-- <script>
+const flightPrice = "{{ flight.price }}";
+const travellersCount = "{{ travellers_num }}";
+
+function createTravellerForm(index) {
+  const travellerDiv = document.createElement('div');
+  travellerDiv.className = 'traveller-section';
+  travellerDiv.setAttribute('data-traveller-index', index);
+
+  travellerDiv.innerHTML = `
+    <h5>Traveller ${index + 1}</h5>
+    <span class="text-muted-small">Please enter the details as they appear on the passport or government-issued ID.</span>
+
+    <div class="mb-3">
+      <label class="form-label">Full Name</label>
+      <input type="text" class="form-control" name="full_name_${index}" placeholder="e.g., John Doe" required>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label class="form-label">Age</label>
+        <input type="number" class="form-control" name="age_${index}" placeholder="e.g., 30" min="1" max="120" required>
+      </div>
+      <div class="col-md-6 mb-3">
+        <label class="form-label">Passport or ID Number</label>
+        <input type="text" class="form-control" name="passport_number_${index}" placeholder="e.g., X1234567" required>
+      </div>
+    </div> -->
+
+    <!-- Additional hidden fields -->
+    <!-- <input type="hidden" name="nationality_${index}" value="Not Provided">
+    <input type="hidden" name="gender_${index}" value="Not Specified">
+    <input type="hidden" name="email_${index}" value="{{ session.get('email', '') }}">
+    <input type="hidden" name="phone_number_${index}" value="Not Provided">
+  `;
+
+  return travellerDiv;
+} -->
+<!-- 
+// function renderTravellerForms() {
+//   const container = document.getElementById('travellersContainer');
+//   container.innerHTML = '';
+
+//   for (let i = 0; i < travellersCount; i++) {
+//     const travellerForm = createTravellerForm(i);
+//     container.appendChild(travellerForm);
+//   }
+// }
+
+// document.addEventListener('DOMContentLoaded', function() {
+//   renderTravellerForms();
+// });
+
+// document.getElementById("travellersForm").addEventListener("submit", async function(e) {
+//   e.preventDefault();
+
+//   const travellers = [];
+
+//   for (let i = 0; i < travellersCount; i++) {
+//     const fullName = document.querySelector(`[name="full_name_${i}"]`).value.trim();
+//     const age = document.querySelector(`[name="age_${i}"]`).value;
+//     const passportNumber = document.querySelector(`[name="passport_number_${i}"]`).value.trim();
+
+//     if (!fullName || !age || !passportNumber) {
+//       alert(`Please fill in all required fields for Traveller ${i + 1}`);
+//       return;
+//     }
+
+//     travellers.push({
+//       full_name: fullName,
+//       age: parseInt(age),
+//       passport_number: passportNumber,
+//       nationality: document.querySelector(`[name="nationality_${i}"]`).value,
+//       gender: document.querySelector(`[name="gender_${i}"]`).value,
+//       email: document.querySelector(`[name="email_${i}"]`).value,
+//       phone_number: document.querySelector(`[name="phone_number_${i}"]`).value
+//     });
+//   }
+
+//   const formData = new FormData();
+//   formData.append('travellers', JSON.stringify(travellers));
+//   formData.append('flight_id', '{{ flight.flight_id }}');
+//   formData.append('total_amount', flightPrice * travellersCount);
+
+//   try {
+//     const response = await fetch("/traveller", {
+//       method: "POST",
+//       body: formData
+//     });
+
+//     const data = await response.json();
+//     if (data.success) {
+//       window.location.href = `/payment/${'{{ flight.flight_id }}'}?travellers=${travellersCount}&total_amount=${flightPrice * travellersCount}&flight_id=${'{{ flight.flight_id }}'}`;
+//     } else {
+//       alert("Error saving traveller details: " + (data.error || "Unknown error"));
+//     }
+//   } catch (error) {
+//     console.error("Error:", error);
+//     alert("Network error. Please try again.");
+//   }
+// });
+</script>
+</body>
+</html> -->
+
+
